@@ -1,0 +1,2 @@
+﻿MySql.Data 8.0.31
+MySqlBackup.NET 2.3.7
