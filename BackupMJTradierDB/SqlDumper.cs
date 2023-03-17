@@ -9,39 +9,45 @@ namespace BackupMJTradierDB
 {
     public class SqlDumper
     {
-        const string sOriginDB = "mjtradierdb";
-        const string sBackUpDB = "mjtradierdb_bk";
+        string sOriginDB;
+        string sBackUpDB;
         string sUpConn;
         string sDownConn;
         string sDownDBConn;
-        string sSqlFile = @"C:\Users\MJ\source\repos\BackupMJTradierDB\BackupMJTradierDB\bin\Debug\backup.sql";
+        public string sSqlFile;
 
 
         public SqlDumper()
         {
+            sOriginDB = "mjtradierdb";
+            sBackUpDB = "mjtradierdb_bk";
             sUpConn = $"server=221.149.119.60;port=2023;user=meancl;pwd=1234;database={sOriginDB}";
-            sDownConn = $"server=localhost;user=root;pwd=1234;database={sBackUpDB}";
-            sDownDBConn = "server=localhost;user=root;port=3306;password=1234"; 
+            sDownConn = $"server=localhost;user=root;pwd=root;database={sBackUpDB}";
+            sDownDBConn = "server=localhost;user=root;port=3306;password=root";
+            sSqlFile = @"./backup.sql";
         }
+
+        #region mainServer DB download
         public void Backup()
         {
             using (MySqlConnection conn = new MySqlConnection(sUpConn))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
-                    using (MySqlBackup mb = new MySqlBackup(cmd))
+                    using (MySqlBackup mainServer = new MySqlBackup(cmd))
                     {
+                        DropDB(sBackUpDB);
                         cmd.Connection = conn;
                         conn.Open();
-                        mb.ExportToFile(sSqlFile);
+                        mainServer.ExportToFile(sSqlFile);
                         conn.Close();
-                        DropDB();
                     }
                 }
             }
         }
+        #endregion
 
-
+        #region serveServer DB upload
         public void Restore()
         {
             using (MySqlConnection conn = new MySqlConnection(sDownConn))
@@ -50,7 +56,7 @@ namespace BackupMJTradierDB
                 {
                     using (MySqlBackup mb = new MySqlBackup(cmd))
                     {
-                        CreateDB();
+                        CreateDB(sBackUpDB);
                         cmd.Connection = conn;
                         conn.Open();
                         mb.ImportFromFile(sSqlFile);
@@ -59,28 +65,37 @@ namespace BackupMJTradierDB
                 }
             }
         }
+        #endregion
 
-        void CreateDB(string sDbName=sBackUpDB)
+        #region DB 생성
+        void CreateDB(string sDbName)
         {
             using (var conn = new MySqlConnection(sDownDBConn))
-            using (var cmd = conn.CreateCommand())
             {
-                conn.Open();
-                cmd.CommandText = $"CREATE DATABASE IF NOT EXISTS {sDbName} DEFAULT CHARACTER SET utf8mb4";
-                cmd.ExecuteNonQuery();
+                using (var cmd = conn.CreateCommand())
+                {
+                    conn.Open();
+                    cmd.CommandText = $"CREATE DATABASE IF NOT EXISTS {sDbName} DEFAULT CHARACTER SET utf8mb4";
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
+        #endregion
 
-        void DropDB(string sDbName=sBackUpDB)
+        #region DB 삭제 
+        void DropDB(string sDbName)
         {
             using (var conn = new MySqlConnection(sDownDBConn))
-            using (var cmd = conn.CreateCommand())
             {
-                conn.Open();
-                cmd.CommandText = $"DROP DATABASE IF EXISTS {sDbName}";
-                cmd.ExecuteNonQuery();
+                using (var cmd = conn.CreateCommand())
+                {
+                    conn.Open();
+                    cmd.CommandText = $"DROP DATABASE IF EXISTS {sDbName}";
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
+        #endregion
 
     }
 }
