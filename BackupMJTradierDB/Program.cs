@@ -12,8 +12,10 @@ namespace BackupMJTradierDB
         static void Main(string[] args)
         {
             SqlDumper sqlDumper = new SqlDumper();
-            sqlDumper.Backup();
-            sqlDumper.Restore();
+            //sqlDumper.Backup();
+            //sqlDumper.Restore();
+            sqlDumper.DropDB(sqlDumper.sBackUpDB);
+            sqlDumper.CreateDB(sqlDumper.sBackUpDB);
             File.Delete(sqlDumper.sSqlFile);
         }
     }
