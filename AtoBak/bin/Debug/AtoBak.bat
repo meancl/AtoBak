@@ -1,0 +1,1 @@
+AtoBak.exe && mysqldump -u meancl -p1234 -h 221.149.119.60 -P 2023 mjtradierdb > backUp.sql && mysql -u root -proot mjtradierdb_bk < backUp.sql && del backUp.sql

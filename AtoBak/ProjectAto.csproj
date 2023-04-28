@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DA6142A1-74AC-415A-A3D6-738F647BEBCC}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>BackupMJTradierDB</RootNamespace>
-    <AssemblyName>BackupMJTradierDB</AssemblyName>
+    <RootNamespace>AtoBak</RootNamespace>
+    <AssemblyName>AtoBak</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
